@@ -16,7 +16,7 @@ public class JpaMenuRepository implements MenuRepository {
 
     @Override
     @Transactional
-    public Menu save(Menu menu) {
+    public Menu save(Menu menu, int userId) {
         if (menu.isNew()) {
             em.persist(menu);
             return menu;

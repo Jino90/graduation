@@ -2,6 +2,8 @@ package website.yoborisov.graduation.model;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,6 +24,11 @@ public class Menu extends AbstractNamedEntity {
     @NotNull
     private Float price;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User author;
+
     public Menu() {
     }
 
@@ -36,6 +43,14 @@ public class Menu extends AbstractNamedEntity {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public void setAuthor(User user){
+        this.author = user;
+    }
+
+    public User getAuthor(){
+        return this.author;
     }
 
 }
