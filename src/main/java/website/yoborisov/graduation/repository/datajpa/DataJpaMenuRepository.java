@@ -3,13 +3,7 @@ package website.yoborisov.graduation.repository.datajpa;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import website.yoborisov.graduation.model.Menu;
-import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.repository.MenuRepository;
-import website.yoborisov.graduation.repository.UserRepository;
-import website.yoborisov.graduation.repository.datajpa.CrudMenuRepository;
-import website.yoborisov.graduation.repository.datajpa.CrudUserRepository;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
