@@ -310,7 +310,7 @@
             </dependencies>
         </profile>
 
-        <profile>
+<!--        <profile>
             <id>postgres</id>
             <dependencies>
                 <dependency>
@@ -334,7 +334,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-        </profile>
+        </profile>-->
     </profiles>
 
     <dependencyManagement>
