@@ -12,13 +12,24 @@ VALUES ('USER', 100000),
        ('ADMIN', 100001),
        ('USER', 100001);
 
-/*INSERT INTO meals (date_time, description, calories, user_id)
-VALUES ('2020-01-30 10:00:00', 'Завтрак', 500, 100000),
-       ('2020-01-30 13:00:00', 'Обед', 1000, 100000),
-       ('2020-01-30 20:00:00', 'Ужин', 500, 100000),
-       ('2020-01-31 0:00:00', 'Еда на граничное значение', 100, 100000),
-       ('2020-01-31 10:00:00', 'Завтрак', 500, 100000),
-       ('2020-01-31 13:00:00', 'Обед', 1000, 100000),
-       ('2020-01-31 20:00:00', 'Ужин', 510, 100000),
-       ('2020-01-31 14:00:00', 'Админ ланч', 510, 100001),
-       ('2020-01-31 21:00:00', 'Админ ужин', 1500, 100001);*/
+INSERT INTO restraunt (name)
+VALUES ('Pikadili'),
+       ('Zhiguli'),
+       ('Griboedov');
+
+INSERT INTO menu (user_id, name, restraunt_id)
+VALUES (100001, 'Enthusiastic menu', 1),
+       (100001, 'Rus vodka menu', 2),
+       (100001, 'Mushroom menu', 3);
+
+INSERT INTO dishes (name, price, menu_id)
+VALUES ('Oduvanchiki pod sousom karri', 2, 1),
+       ('Mozg karpa', 5, 1),
+       ('Vodka s ogurchikami i chesnokom', 3, 2),
+       ('Vodka s pivom i percem', 2, 2),
+       ('Vodka s vassabi', 1, 2),
+       ('Vodka s krabom', 6, 2),
+       ('Rassol and trufeli', 15, 2),
+       ('Zhulen', 6, 3),
+       ('Lisi4ki v mayoneze', 4, 3),
+       ('Shitaki s ovoschami', 12, 3);
