@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import website.yoborisov.graduation.model.Menu;
+import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.service.MenuService;
 
 import java.time.LocalDate;
@@ -52,5 +53,13 @@ public class AdminMenuController extends AbstractMenuController {
         log.info("update {} for user {}", menu, userId);
         //assureIdConsistent(Menu, id);
         return service.update(menu, userId);
+    }
+
+    @Operation(summary = "Получить все меню")
+    @Override
+    public @ResponseBody
+    @GetMapping(value = "/allbyuser")
+    List<Menu> getAllByUser(@RequestParam int userId) {
+        return super.getAllByUser(userId);
     }
 }

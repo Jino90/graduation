@@ -21,14 +21,14 @@ public class UsersController extends AbstractUserController {
 
     @Operation(summary = "Получить пользователя с заданным id")
     @Override
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/user")
     public @ResponseBody User get(int id) {
         return super.get(id);
     }
 
     @Operation(summary = "Создать пользователя с заданным id")
     @Override
-    @PostMapping(path = "")
+    @PostMapping(path = "/user")
     public @ResponseBody User create(@RequestBody User user) {
         return super.create(user);
     }
@@ -49,8 +49,8 @@ public class UsersController extends AbstractUserController {
 
     @Operation(summary = "Получить пользователя с заданным e-mail")
     @Override
-    @GetMapping(value = "/{email}")
-    public User getByMail(String email) {
+    @GetMapping(value = "/userbyemail")
+    public @ResponseBody User getByMail(@RequestParam String email) {
         return super.getByMail(email);
     }
 }

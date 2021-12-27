@@ -26,13 +26,20 @@ public abstract class AbstractMenuController {
         return service.get(id, userId);
     }
 
+    @Operation(summary = "Получить все меню, созданные пользователем")
+    @GetMapping(path = "/allbyuser")
+    public @ResponseBody
+    List<Menu> getAllByUser(@RequestParam(required = false) int userId) {
+        //int userId = SecurityUtil.authUserId();
+        log.info("get Menu list for user {}", userId);
+        return service.getAllByUser(userId);
+    }
+
     @Operation(summary = "Получить все меню")
     @GetMapping(path = "/all")
     public @ResponseBody
     List<Menu> getAll() {
         //int userId = SecurityUtil.authUserId();
-        int userId = 0;
-        log.info("get Menu list for user {}", userId);
-        return service.getAll(userId);
+        return service.getAll();
     }
 }

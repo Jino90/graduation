@@ -13,7 +13,9 @@ public interface MenuRepository {
 
     Menu get(int id);
 
-    List<Menu> getAll(int userId);
+    List<Menu> getAllByUser(int userId);
+
+    List<Menu> getAll();
 
     default Menu getWithUser(int id, int userId) {
         throw new UnsupportedOperationException();

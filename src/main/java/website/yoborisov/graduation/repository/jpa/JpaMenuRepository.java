@@ -41,9 +41,15 @@ public class JpaMenuRepository implements MenuRepository {
     }
 
     @Override
-    public List<Menu> getAll(int userId) {
+    public List<Menu> getAllByUser(int userId) {
         return em.createNamedQuery(Menu.ALL_SORTED, Menu.class)
                 .setParameter("userId", userId)
+                .getResultList();
+    }
+
+    @Override
+    public List<Menu> getAll() {
+        return em.createNamedQuery(Menu.ALL_SORTED, Menu.class)
                 .getResultList();
     }
 }

@@ -34,7 +34,7 @@ public class Menu extends AbstractNamedEntity {
     @JoinColumn(name = "restraunt_id", referencedColumnName = "id")
     private Restraunt restraunt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User author;
@@ -70,4 +70,11 @@ public class Menu extends AbstractNamedEntity {
         return this.author;
     }
 
+    public void setDishes(Set<Dish> dishes){
+        this.dishes = dishes;
+    }
+
+    public void addDish(Dish dish){
+        this.dishes.add(dish);
+    }
 }

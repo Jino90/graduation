@@ -3,6 +3,7 @@ package website.yoborisov.graduation.service;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import website.yoborisov.graduation.model.Menu;
+import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.repository.MenuRepository;
 
 import java.util.List;
@@ -24,8 +25,12 @@ public class MenuService {
         repository.delete(id, userId);
     }
 
-    public List<Menu> getAll(int userId) {
-        return repository.getAll(userId);
+    public List<Menu> getAllByUser(int userId) {
+        return repository.getAllByUser(userId);
+    }
+
+    public List<Menu> getAll() {
+        return repository.getAll();
     }
 
     public Menu update(Menu Menu, int userId) {

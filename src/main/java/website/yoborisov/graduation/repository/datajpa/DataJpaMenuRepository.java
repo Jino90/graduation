@@ -23,9 +23,11 @@ public class DataJpaMenuRepository implements MenuRepository {
         if (!menu.isNew() && get(menu.id()) == null) {
             return null;
         }
-        menu.setAuthor(crudUserRepository.getWithMeals(userId));
+        menu.setAuthor(crudUserRepository.getWithMenu(userId));
         return crudMenuRepository.save(menu);
     }
+
+
 
     @Override
     public boolean delete(int id, int userId) {
@@ -39,13 +41,20 @@ public class DataJpaMenuRepository implements MenuRepository {
     }
 
     @Override
-    public List<Menu> getAll(int userId) {
-        return crudMenuRepository.getAll(userId);
+    public List<Menu> getAllByUser(int userId) {
+        return crudMenuRepository.getAllByUser(userId);
+    }
+
+    @Override
+    public List<Menu> getAll() {
+        return crudMenuRepository.getAll();
     }
 
     @Override
     public Menu getWithUser(int id, int userId) {
         return crudMenuRepository.getWithUser(id, userId);
     }
+
+
 
 }
