@@ -15,4 +15,6 @@ public interface RestrauntRepository {
 
     List<Restraunt> getAll();
 
+    Restraunt setMenu(Restraunt restraunt, int menuId);
+
 }

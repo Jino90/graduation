@@ -1,5 +1,6 @@
 package website.yoborisov.graduation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.util.Assert;
@@ -10,10 +11,12 @@ import javax.persistence.*;
 @Access(AccessType.FIELD)
 public abstract class AbstractBaseEntity implements Persistable<Integer> {
     public static final int START_SEQ = 1;
+    public static final String seqName = "global_seq";
 
     @Id
-    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
+    @SequenceGenerator(name = seqName, sequenceName = seqName, allocationSize = 1, initialValue = START_SEQ)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = seqName)
+    @JsonIgnore
     protected Integer id;
 
     protected AbstractBaseEntity() {
@@ -38,6 +41,7 @@ public abstract class AbstractBaseEntity implements Persistable<Integer> {
     }
 
     @Override
+    @JsonIgnore
     public boolean isNew() {
         return this.id == null;
     }

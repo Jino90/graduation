@@ -27,8 +27,6 @@ public class DataJpaMenuRepository implements MenuRepository {
         return crudMenuRepository.save(menu);
     }
 
-
-
     @Override
     public boolean delete(int id, int userId) {
         return crudMenuRepository.delete(id, userId) != 0;

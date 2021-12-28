@@ -23,7 +23,7 @@ public abstract class AbstractMenuController {
         //int userId = SecurityUtil.authUserId();
         int userId = 0;
         log.info("get Menu {} for user {}", id, userId);
-        return service.get(id, userId);
+        return service.get(id);
     }
 
     @Operation(summary = "Получить все меню, созданные пользователем")

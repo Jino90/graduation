@@ -17,7 +17,7 @@ public class MenuService {
         this.repository = repository;
     }
 
-    public Menu get(int id, int userID) {
+    public Menu get(int id) {
         return repository.get(id);
     }
 
@@ -41,6 +41,12 @@ public class MenuService {
     public Menu create(Menu Menu, int userId) {
         Assert.notNull(Menu, "Menu must not be null");
         return repository.save(Menu, userId);
+    }
+
+    public Menu vote(int menuId) {
+        Menu menu = this.get(menuId);
+        menu.increaseVotes();
+        return update(menu, 100001);
     }
 
     public Menu getWithUser(int id, int userId) {

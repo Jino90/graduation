@@ -3,7 +3,6 @@ package website.yoborisov.graduation.repository.datajpa;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import website.yoborisov.graduation.model.Menu;
 import website.yoborisov.graduation.model.Restraunt;
 import website.yoborisov.graduation.repository.RestrauntRepository;
 
@@ -43,5 +42,11 @@ public class DataJpaRestrauntRepository implements RestrauntRepository {
     @Override
     public List<Restraunt> getAll() {
         return crudRestrauntRepository.findAll(SORT_NAME);
+    }
+
+    @Override
+    public Restraunt setMenu(Restraunt restraunt, int menuId) {
+        restraunt.setMenu(crudMenuRepository.getById(menuId));
+        return crudRestrauntRepository.save(restraunt);
     }
 }

@@ -9,24 +9,26 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
         @NamedQuery(name = Menu.DELETE, query = "DELETE FROM Menu u WHERE u.id=:id"),
-        @NamedQuery(name = Menu.ALL_SORTED, query = "SELECT u FROM Menu u ORDER BY u.name"),
+        @NamedQuery(name = Menu.ALL_SORTED, query = "SELECT u FROM Menu u"),
 })
 @Entity
 @Table(name = "menu")
-public class Menu extends AbstractNamedEntity {
+public class Menu extends AbstractBaseEntity {
+
+    public static final String seqName = "global_seq";
 
     public static final String DELETE = "Menu.delete";
     public static final String ALL_SORTED = "Menu.getAllSorted";
 
-    @OneToMany(mappedBy = "menu")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 200)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @OneToMany(mappedBy = "menu", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    //@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    //@BatchSize(size = 200)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Dish> dishes;
 
@@ -41,6 +43,9 @@ public class Menu extends AbstractNamedEntity {
 
     @Column(name = "votes", nullable = false, columnDefinition = "Votes value", updatable = true)
     private int votes = 0;
+
+    @Transient
+    private String description;
 
     public Menu() {
     }
@@ -57,8 +62,12 @@ public class Menu extends AbstractNamedEntity {
         this.votes++;
     }
 
-    public Menu(Integer id, String name, Set<Dish> dishes) {
-        super(id, name);
+    public Menu(Set<Dish> dishes) {
+        this(null, dishes);
+    }
+
+    public Menu(Integer id, Set<Dish> dishes) {
+        super(id);
         this.dishes = dishes;
     }
 
@@ -74,7 +83,16 @@ public class Menu extends AbstractNamedEntity {
         this.dishes = dishes;
     }
 
-    public void addDish(Dish dish){
+    public Set<Dish> getDishes() {
+        return dishes;
+    }
+
+    public void addToDishes(Dish dish){
+        dish.setMenu(this);
         this.dishes.add(dish);
+    }
+
+    public String getDescription() {
+        return String.format("Меню № %d", this.id);
     }
 }
