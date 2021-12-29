@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import website.yoborisov.graduation.HasId;
 import website.yoborisov.graduation.model.Dish;
 import website.yoborisov.graduation.model.Menu;
 import website.yoborisov.graduation.model.Restraunt;
@@ -15,6 +16,8 @@ import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.service.DishService;
 import website.yoborisov.graduation.service.MenuService;
 import website.yoborisov.graduation.service.RestrauntService;
+import static website.yoborisov.graduation.util.ValidationUtil.assureIdConsistent;
+import static website.yoborisov.graduation.util.ValidationUtil.checkLength;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -63,7 +66,7 @@ public class AdminMenuController extends AbstractMenuController {
     public @ResponseBody Menu createMenu(@RequestBody Set<Dish> dishSet) {
         //int userId = SecurityUtil.authUserId();
         int userId = 100001;
-
+        checkLength(dishSet);
         //log.info("create {} for user {}", menu, userId);
         //checkNew(Menu);
         Menu menu = menuService.create(new Menu(dishSet), userId);
@@ -87,7 +90,8 @@ public class AdminMenuController extends AbstractMenuController {
     public @ResponseBody Menu updateMenu(@RequestBody Menu menu, int id) {
         //int userId = SecurityUtil.authUserId();
         log.info("update {} for user {}", menu, id);
-        //assureIdConsistent(Menu, id);
+        checkLength(menu.getDishes());
+        assureIdConsistent((HasId) menu, id);
         return menuService.update(menu, id);
     }
 
