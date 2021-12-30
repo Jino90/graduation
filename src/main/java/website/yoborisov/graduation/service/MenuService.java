@@ -6,6 +6,7 @@ import website.yoborisov.graduation.model.Menu;
 import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.repository.MenuRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,6 +41,7 @@ public class MenuService {
 
     public Menu create(Menu Menu, int userId) {
         Assert.notNull(Menu, "Menu must not be null");
+        Menu.setPublishDate(LocalDateTime.now());
         return repository.save(Menu, userId);
     }
 
@@ -52,4 +54,5 @@ public class MenuService {
     public Menu getWithUser(int id, int userId) {
         return repository.getWithUser(id, userId);
     }
+
 }

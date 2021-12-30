@@ -1,36 +1,58 @@
 package website.yoborisov.graduation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Entity
 @Table(name = "restraunt")
 public class Restraunt extends AbstractNamedEntity {
 
-    public Menu getMenu() {
-        return menu;
+    public Set<Menu> getMenuSet() {
+        return menuSet;
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    public void setMenuSet(Set<Menu> menuSet) {
+        this.menuSet = menuSet;
     }
 
-    @OneToOne(mappedBy = "restraunt")
+    @OneToMany(mappedBy = "restraunt", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 200)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Menu menu;
+    private Set<Menu> menuSet;
 
-    public Restraunt (){
-
+    public int getVotes() {
+        return votes;
     }
 
-    public Restraunt(Integer id, String name, Menu menu){
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
+
+    @Column(name = "votes", nullable = false, columnDefinition = "Votes value", updatable = true)
+    @JsonIgnore
+    private Integer votes = 0;
+
+    public Restraunt (){
+    }
+
+    public Restraunt(String name, Set<Menu> menuSet){
+        this(null, name, menuSet);
+    }
+
+    public Restraunt(Integer id, String name, Set<Menu> menuSet){
         super(id, name);
-        this.menu = menu;
+        this.menuSet = menuSet;
+    }
+
+    public void increaseVotes() {
+        this.votes++;
     }
 }

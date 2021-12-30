@@ -1,5 +1,6 @@
 package website.yoborisov.graduation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.springframework.util.CollectionUtils;
@@ -13,6 +14,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -57,6 +60,10 @@ public class User extends AbstractNamedEntity {
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
+
+    @Column(name = "last_vote", nullable = true)
+    @JsonIgnore
+    private LocalDateTime lastVote;
 
     public User() {
     }
@@ -128,4 +135,13 @@ public class User extends AbstractNamedEntity {
                 ", roles=" + roles +
                 '}';
     }
+
+    public LocalDateTime getLastVote() {
+        return lastVote;
+    }
+
+    public void setLastVote(LocalDateTime lastVote) {
+        this.lastVote = lastVote;
+    }
+
 }

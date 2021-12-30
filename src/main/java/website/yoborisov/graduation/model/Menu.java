@@ -1,5 +1,6 @@
 package website.yoborisov.graduation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -32,17 +34,40 @@ public class Menu extends AbstractBaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Dish> dishes;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    public Restraunt getRestraunt() {
+        return restraunt;
+    }
+
+    public void setRestraunt(Restraunt restraunt) {
+        this.restraunt = restraunt;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restraunt_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Restraunt restraunt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User author;
 
     @Column(name = "votes", nullable = false, columnDefinition = "Votes value", updatable = true)
-    private int votes = 0;
+    private Integer votes = 0;
+
+    public LocalDateTime getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(LocalDateTime publishDate) {
+        this.publishDate = publishDate;
+    }
+
+    @Column(name = "publish_date", nullable = false, columnDefinition = "Publish date", updatable = true)
+    @JsonIgnore
+    private LocalDateTime publishDate;
 
     @Transient
     private String description;
@@ -69,6 +94,7 @@ public class Menu extends AbstractBaseEntity {
     public Menu(Integer id, Set<Dish> dishes) {
         super(id);
         this.dishes = dishes;
+        this.publishDate = LocalDateTime.now();
     }
 
     public void setAuthor(User user){

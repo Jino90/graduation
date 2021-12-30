@@ -9,6 +9,8 @@ public interface RestrauntRepository {
 
     Restraunt save(Restraunt restraunt, int menuId);
 
+    Restraunt save(Restraunt restraunt);
+
     boolean delete(int id);
 
     Restraunt get(int id);
@@ -16,5 +18,9 @@ public interface RestrauntRepository {
     List<Restraunt> getAll();
 
     Restraunt setMenu(Restraunt restraunt, int menuId);
+
+    default Restraunt getMenus(Integer id){
+        throw new UnsupportedOperationException();
+    }
 
 }

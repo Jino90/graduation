@@ -1,16 +1,26 @@
 package website.yoborisov.graduation.service;
 
+import org.mockito.internal.matchers.Null;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import website.yoborisov.graduation.model.Dish;
+import website.yoborisov.graduation.model.Menu;
 import website.yoborisov.graduation.model.Restraunt;
 import website.yoborisov.graduation.model.User;
+import website.yoborisov.graduation.repository.DishRepository;
+import website.yoborisov.graduation.repository.MenuRepository;
 import website.yoborisov.graduation.repository.RestrauntRepository;
 import website.yoborisov.graduation.repository.UserRepository;
+import website.yoborisov.graduation.util.RestrauntsUtil;
+
+import static website.yoborisov.graduation.util.ValidationUtil.checkNotFoundWithId;
+import static website.yoborisov.graduation.util.ValidationUtil.assureIdConsistent;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RestrauntService {
@@ -22,9 +32,10 @@ public class RestrauntService {
     }
 
     @CacheEvict(value = "restraunt", allEntries = true)
-    public Restraunt create(Restraunt restraunt, int menuId) {
+    public Restraunt create(Restraunt restraunt) {
         Assert.notNull(restraunt, "user must not be null");
-        return repository.save(restraunt, menuId);
+        Assert.notNull(restraunt.getMenuSet(), "Menu must not be null");
+        return repository.save(restraunt);
     }
 
     @CacheEvict(value = "restraunt", allEntries = true)
@@ -45,5 +56,29 @@ public class RestrauntService {
     public Restraunt update(Restraunt restraunt, int menuId) {
         Assert.notNull(restraunt, "user must not be null");
         return repository.save(restraunt, menuId);
+    }
+
+    @CacheEvict(value = "restraunt", allEntries = true)
+    public Restraunt update(Restraunt restraunt) {
+        Assert.notNull(restraunt, "user must not be null");
+        return repository.save(restraunt);
+    }
+
+    public Restraunt vote(int restrauntId) {
+        Restraunt restraunt = this.get(restrauntId);
+        restraunt.increaseVotes();
+/*        Menu menu = restraunt.getMenu();
+        menu.increaseVotes();
+        return update(restraunt, menu.id());*/
+        return update(restraunt);
+    }
+
+    public Set<Menu> getMenus(int restrauntId){
+        return repository.getMenus(restrauntId).getMenuSet();
+    }
+
+    public List<Restraunt> getWithTodaysActualMenu() {
+        List<Restraunt> restraunts = getAll();
+        return RestrauntsUtil.filterNonActualMenus(restraunts);
     }
 }

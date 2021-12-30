@@ -1,6 +1,7 @@
 package website.yoborisov.graduation.repository.datajpa;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import website.yoborisov.graduation.model.Restraunt;
@@ -26,7 +27,16 @@ public class DataJpaRestrauntRepository implements RestrauntRepository {
         if (!restraunt.isNew() && get(restraunt.id()) == null) {
             return null;
         }
-        restraunt.setMenu(crudMenuRepository.getById(menuId));
+        restraunt.getMenuSet().add(crudMenuRepository.getById(menuId));
+        return crudRestrauntRepository.save(restraunt);
+    }
+
+    @Override
+    @Transactional
+    public Restraunt save(Restraunt restraunt) {
+        if (!restraunt.isNew() && get(restraunt.id()) == null) {
+            return null;
+        }
         return crudRestrauntRepository.save(restraunt);
     }
 
@@ -46,7 +56,13 @@ public class DataJpaRestrauntRepository implements RestrauntRepository {
 
     @Override
     public Restraunt setMenu(Restraunt restraunt, int menuId) {
-        restraunt.setMenu(crudMenuRepository.getById(menuId));
+        restraunt.getMenuSet().add(crudMenuRepository.getById(menuId));
         return crudRestrauntRepository.save(restraunt);
     }
+
+    @Override
+    public Restraunt getMenus(Integer id){
+        return crudRestrauntRepository.getMenus(id);
+    }
+
 }

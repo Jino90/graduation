@@ -46,6 +46,7 @@ public class AdminMenuController extends AbstractMenuController {
         //int userId = SecurityUtil.authUserId();
         int userId = 0;
         log.info("delete Menu {} for user {}", id, userId);
+        menuService.delete(id, 100001);
         return "ОК";
     }
 
@@ -60,29 +61,47 @@ public class AdminMenuController extends AbstractMenuController {
         return menuService.create(menu, userId);
     }*/
 
-    @Operation(summary = "Сохранить в базе новое меню")
+    @Operation(summary = "Сохранить в базе новое меню для указанного ресторана")
     @PostMapping(path = "/menu")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Menu createMenu(@RequestBody Set<Dish> dishSet) {
+    public @ResponseBody Menu createMenu(@RequestBody Set<Dish> dishSet, @RequestParam Integer restrauntId) {
         //int userId = SecurityUtil.authUserId();
         int userId = 100001;
         checkLength(dishSet);
         //log.info("create {} for user {}", menu, userId);
         //checkNew(Menu);
-        Menu menu = menuService.create(new Menu(dishSet), userId);
+        Menu newMenu = new Menu(dishSet);
+        Restraunt restraunt = restrauntService.get(restrauntId);
+        newMenu.setRestraunt(restrauntService.get(restrauntId));
+        newMenu = menuService.create(newMenu, userId);
         for (Dish dish: dishSet){
-            dish.setMenu(menu);
+            dish.setMenu(newMenu);
             dishService.update(dish);
         }
-        return menu;
+        Set<Menu> newMenuSet = restraunt.getMenuSet();
+        newMenuSet.add(newMenu);
+        restraunt.setMenuSet(newMenuSet);
+        restrauntService.update(restraunt);
+        return newMenu;
     }
 
     @Operation(summary = "Сохранить в базе новый ресторан с заданным меню")
-    @PostMapping(path = "/restraunt/{id}")
+    @PostMapping(path = "/restraunt/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Restraunt createRestraunt(@RequestBody Restraunt restraunt, int menuId){
-        log.info("create {} for user {}", restraunt, menuId);
-        return restrauntService.create(restraunt, menuId);
+    public @ResponseBody Restraunt createRestraunt(@RequestBody Restraunt restraunt){
+        int userId = 100001;
+        log.info("create restraunt {} ", restraunt.getName());
+        Restraunt restraunt1 = restrauntService.create(restraunt);
+        for (Menu menu: restraunt.getMenuSet()){
+            checkLength(menu.getDishes());
+            menu.setRestraunt(restraunt1);
+            Menu menu1 = menuService.create(menu, userId);
+            for (Dish dish: menu.getDishes()){
+                dish.setMenu(menu1);
+                dishService.create(dish);
+            }
+        };
+        return restraunt1;
     }
 
     @Operation(summary = "Обновить меню с заданным id")
@@ -102,21 +121,36 @@ public class AdminMenuController extends AbstractMenuController {
         return restrauntService.update(restraunt, menuId);
     }
 
-    @Operation(summary = "Получить все меню")
+    @Operation(summary = "Получить все меню ресторана")
+    @GetMapping(value = "/restraunt/getmenus/{id}")
+    public @ResponseBody Set<Menu> getRestrauntMenus(@PathVariable(value="id") Integer restrauntId){
+        log.info("Get menus for restraunt # {}", restrauntId);
+        return restrauntService.getMenus(restrauntId);
+    }
+
+    @Operation(summary = "Получить список ресторанов с актуальными меню")
+    @GetMapping(value = "/restraunt/actualmenus")
+    public @ResponseBody List<Restraunt> getWithActualMenus(){
+        log.info("Get actual menus for restraunts");
+        return restrauntService.getWithTodaysActualMenu();
+    }
+
+/*    @Operation(summary = "Получить все меню")
     @Override
     public @ResponseBody
     @GetMapping(value = "/menu/allbyuser")
     List<Menu> getAllByUser(@RequestParam int userId) {
         return super.getAllByUser(userId);
-    }
+    }*/
 
-    @Operation(summary = "Проголосовать за меню с заданным id")
+    @Operation(summary = "Проголосовать за меню с заданным id, повышая рейтинг ресторана")
     @PutMapping(value = "/menu/vote/{id}")
     public @ResponseBody Menu voteForMenu(int id) {
         //int userId = SecurityUtil.authUserId();
         log.info("Vote for Menu № {}", id);
         //assureIdConsistent(Menu, id);
+        Restraunt restraunt = menuService.get(id).getRestraunt();
+        restraunt.increaseVotes();
         return menuService.vote(id);
     }
-
 }
