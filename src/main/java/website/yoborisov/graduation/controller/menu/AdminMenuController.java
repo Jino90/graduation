@@ -16,6 +16,8 @@ import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.service.DishService;
 import website.yoborisov.graduation.service.MenuService;
 import website.yoborisov.graduation.service.RestrauntService;
+import website.yoborisov.graduation.util.SecurityUtil;
+
 import static website.yoborisov.graduation.util.ValidationUtil.assureIdConsistent;
 import static website.yoborisov.graduation.util.ValidationUtil.checkLength;
 
@@ -43,10 +45,10 @@ public class AdminMenuController extends AbstractMenuController {
     @Operation(summary = "Удалить меню с заданным id")
     @DeleteMapping(path = "/menu/{id}")
     public @ResponseBody String deleteMenu(int id) {
-        //int userId = SecurityUtil.authUserId();
-        int userId = 0;
+        int userId = SecurityUtil.authUserId();
+        //int userId = 0;
         log.info("delete Menu {} for user {}", id, userId);
-        menuService.delete(id, 100001);
+        menuService.delete(id, userId);
         return "ОК";
     }
 
@@ -65,8 +67,8 @@ public class AdminMenuController extends AbstractMenuController {
     @PostMapping(path = "/menu")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Menu createMenu(@RequestBody Set<Dish> dishSet, @RequestParam Integer restrauntId) {
-        //int userId = SecurityUtil.authUserId();
-        int userId = 100001;
+        int userId = SecurityUtil.authUserId();
+        //int userId = 100001;
         checkLength(dishSet);
         //log.info("create {} for user {}", menu, userId);
         //checkNew(Menu);
@@ -89,8 +91,9 @@ public class AdminMenuController extends AbstractMenuController {
     @PostMapping(path = "/restraunt/new")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Restraunt createRestraunt(@RequestBody Restraunt restraunt){
-        int userId = 100001;
-        log.info("create restraunt {} ", restraunt.getName());
+        //int userId = 100001;
+        int userId = SecurityUtil.authUserId();
+        log.info("create restraunt {} by user {}", restraunt.getName(), userId);
         Restraunt restraunt1 = restrauntService.create(restraunt);
         for (Menu menu: restraunt.getMenuSet()){
             checkLength(menu.getDishes());
@@ -108,7 +111,8 @@ public class AdminMenuController extends AbstractMenuController {
     @PutMapping(value = "/menu/{id}")
     public @ResponseBody Menu updateMenu(@RequestBody Menu menu, int id) {
         //int userId = SecurityUtil.authUserId();
-        log.info("update {} for user {}", menu, id);
+        int userId = SecurityUtil.authUserId();
+        log.info("update {} for user {}", menu, userId);
         checkLength(menu.getDishes());
         assureIdConsistent((HasId) menu, id);
         return menuService.update(menu, id);
@@ -117,7 +121,8 @@ public class AdminMenuController extends AbstractMenuController {
     @Operation(summary = "Обновить данные ресторана с заданным id")
     @PutMapping(value = "/restraunt/{id}")
     public @ResponseBody Restraunt updateRestraunt(@RequestBody Restraunt restraunt, int menuId){
-        log.info("update {} for user {}", restraunt, menuId);
+        int userId = SecurityUtil.authUserId();
+        log.info("update {} for user {}", restraunt, userId);
         return restrauntService.update(restraunt, menuId);
     }
 
@@ -146,8 +151,8 @@ public class AdminMenuController extends AbstractMenuController {
     @Operation(summary = "Проголосовать за меню с заданным id, повышая рейтинг ресторана")
     @PutMapping(value = "/menu/vote/{id}")
     public @ResponseBody Menu voteForMenu(int id) {
-        //int userId = SecurityUtil.authUserId();
-        log.info("Vote for Menu № {}", id);
+        int userId = SecurityUtil.authUserId();
+        log.info("Vote for Menu № {}, by user {}", id, userId);
         //assureIdConsistent(Menu, id);
         Restraunt restraunt = menuService.get(id).getRestraunt();
         restraunt.increaseVotes();

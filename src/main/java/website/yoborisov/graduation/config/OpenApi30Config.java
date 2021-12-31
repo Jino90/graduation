@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "My API", version = "v1"))
+@OpenAPIDefinition(info = @Info(title = "Restraunt votes", version = "v1"))
 @SecurityScheme(
         name = "basicAuth",
         type = SecuritySchemeType.HTTP,
