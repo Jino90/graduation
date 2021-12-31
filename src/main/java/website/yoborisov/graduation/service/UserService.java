@@ -9,7 +9,7 @@ import website.yoborisov.graduation.repository.UserRepository;
 
 import java.util.List;
 
-@Service
+@Service("userService")
 public class UserService {
 
     private final UserRepository repository;
