@@ -1,12 +1,15 @@
 package website.yoborisov.graduation.util;
 
+import com.sun.jdi.VMOutOfMemoryException;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 import website.yoborisov.graduation.HasId;
 import website.yoborisov.graduation.util.exception.MenuLengthValidationException;
 import website.yoborisov.graduation.util.exception.NotFoundException;
+import website.yoborisov.graduation.util.exception.VoteChangeDepricatedException;
 
 import javax.validation.*;
+import java.time.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -76,7 +79,20 @@ public class ValidationUtil {
                 throw new MenuLengthValidationException();
             }
         }
+    }
 
+    public static void checkVoteTime(LocalDateTime localDateTime){
+        if (localDateTime == null){return;}
+        LocalDateTime now = LocalDateTime.now();
+        LocalTime midnight = LocalTime.MIDNIGHT;
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Moscow"));
+        LocalDateTime todayMidnight = LocalDateTime.of(today, midnight);
+        LocalDateTime elevenHour = todayMidnight.plusHours(11);
+        // Запрет изменения голоса после 11 часов в тот же день
+        if (todayMidnight.toEpochSecond(ZoneOffset.of("+03:00")) < localDateTime.toEpochSecond(ZoneOffset.of("+03:00"))
+                && now.toEpochSecond(ZoneOffset.of("+03:00")) > elevenHour.toEpochSecond(ZoneOffset.of("+03:00")) ){
+            throw new VoteChangeDepricatedException();
+        }
     }
 
 }

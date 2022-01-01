@@ -65,6 +65,18 @@ public class User extends AbstractNamedEntity {
     @JsonIgnore
     private LocalDateTime lastVote;
 
+    public Integer getVotedMenu() {
+        return votedMenu;
+    }
+
+    public void setVotedMenu(Integer votedMenu) {
+        this.votedMenu = votedMenu;
+    }
+
+    @Column(name = "voted_menu_id", nullable = true)
+    @JsonIgnore
+    private Integer votedMenu;
+
     public User() {
     }
 
@@ -133,6 +145,8 @@ public class User extends AbstractNamedEntity {
                 ", name=" + name +
                 ", enabled=" + enabled +
                 ", roles=" + roles +
+                ", lastVote=" + lastVote +
+                ", votedMenu=" + votedMenu +
                 '}';
     }
 

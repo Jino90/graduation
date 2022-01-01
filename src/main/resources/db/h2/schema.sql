@@ -18,7 +18,8 @@ CREATE TABLE users
     password         VARCHAR(255)            NOT NULL,
     registered       TIMESTAMP DEFAULT now() NOT NULL,
     enabled          BOOLEAN   DEFAULT TRUE  NOT NULL,
-    last_vote   TIMESTAMP
+    last_vote   TIMESTAMP,
+    voted_menu_id INTEGER
 );
 CREATE UNIQUE INDEX users_unique_email_idx
     ON USERS (email);

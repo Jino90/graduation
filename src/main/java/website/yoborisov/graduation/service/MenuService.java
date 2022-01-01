@@ -45,10 +45,10 @@ public class MenuService {
         return repository.save(Menu, userId);
     }
 
-    public Menu vote(int menuId) {
+    public Menu vote(int menuId, int userId) {
         Menu menu = this.get(menuId);
         menu.increaseVotes();
-        return update(menu, 100001);
+        return update(menu, userId);
     }
 
     public Menu getWithUser(int id, int userId) {

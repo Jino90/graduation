@@ -87,6 +87,10 @@ public class Menu extends AbstractBaseEntity {
         this.votes++;
     }
 
+    public void decreaseVotes(){
+        this.votes--;
+    }
+
     public Menu(Set<Dish> dishes) {
         this(null, dishes);
     }

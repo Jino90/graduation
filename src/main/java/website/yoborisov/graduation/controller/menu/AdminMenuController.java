@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import website.yoborisov.graduation.HasId;
@@ -44,6 +45,7 @@ public class AdminMenuController extends AbstractMenuController {
 
     @Operation(summary = "Удалить меню с заданным id")
     @DeleteMapping(path = "/menu/{id}")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody String deleteMenu(int id) {
         int userId = SecurityUtil.authUserId();
         //int userId = 0;
@@ -66,6 +68,7 @@ public class AdminMenuController extends AbstractMenuController {
     @Operation(summary = "Сохранить в базе новое меню для указанного ресторана")
     @PostMapping(path = "/menu")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody Menu createMenu(@RequestBody Set<Dish> dishSet, @RequestParam Integer restrauntId) {
         int userId = SecurityUtil.authUserId();
         //int userId = 100001;
@@ -90,6 +93,7 @@ public class AdminMenuController extends AbstractMenuController {
     @Operation(summary = "Сохранить в базе новый ресторан с заданным меню")
     @PostMapping(path = "/restraunt/new")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody Restraunt createRestraunt(@RequestBody Restraunt restraunt){
         //int userId = 100001;
         int userId = SecurityUtil.authUserId();
@@ -109,6 +113,7 @@ public class AdminMenuController extends AbstractMenuController {
 
     @Operation(summary = "Обновить меню с заданным id")
     @PutMapping(value = "/menu/{id}")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody Menu updateMenu(@RequestBody Menu menu, int id) {
         //int userId = SecurityUtil.authUserId();
         int userId = SecurityUtil.authUserId();
@@ -120,6 +125,7 @@ public class AdminMenuController extends AbstractMenuController {
 
     @Operation(summary = "Обновить данные ресторана с заданным id")
     @PutMapping(value = "/restraunt/{id}")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody Restraunt updateRestraunt(@RequestBody Restraunt restraunt, int menuId){
         int userId = SecurityUtil.authUserId();
         log.info("update {} for user {}", restraunt, userId);
@@ -128,6 +134,7 @@ public class AdminMenuController extends AbstractMenuController {
 
     @Operation(summary = "Получить все меню ресторана")
     @GetMapping(value = "/restraunt/getmenus/{id}")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody Set<Menu> getRestrauntMenus(@PathVariable(value="id") Integer restrauntId){
         log.info("Get menus for restraunt # {}", restrauntId);
         return restrauntService.getMenus(restrauntId);
@@ -135,6 +142,7 @@ public class AdminMenuController extends AbstractMenuController {
 
     @Operation(summary = "Получить список ресторанов с актуальными меню")
     @GetMapping(value = "/restraunt/actualmenus")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody List<Restraunt> getWithActualMenus(){
         log.info("Get actual menus for restraunts");
         return restrauntService.getWithTodaysActualMenu();
@@ -148,8 +156,9 @@ public class AdminMenuController extends AbstractMenuController {
         return super.getAllByUser(userId);
     }*/
 
-    @Operation(summary = "Проголосовать за меню с заданным id, повышая рейтинг ресторана")
+/*    @Operation(summary = "Проголосовать за меню с заданным id, повышая рейтинг ресторана")
     @PutMapping(value = "/menu/vote/{id}")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody Menu voteForMenu(int id) {
         int userId = SecurityUtil.authUserId();
         log.info("Vote for Menu № {}, by user {}", id, userId);
@@ -157,5 +166,5 @@ public class AdminMenuController extends AbstractMenuController {
         Restraunt restraunt = menuService.get(id).getRestraunt();
         restraunt.increaseVotes();
         return menuService.vote(id);
-    }
+    }*/
 }
