@@ -17,10 +17,10 @@ VALUES ('Pikadili'),
        ('Zhiguli'),
        ('Griboedov');
 
-INSERT INTO menu (user_id, restraunt_id, votes)
-VALUES (100001, 1, 0),
-       (100001, 2, 0),
-       (100001, 3, 0);
+INSERT INTO menu (id, user_id, restraunt_id, votes)
+VALUES (1, 100001, 1, 0),
+       (2, 100001, 2, 0),
+       (3, 100001, 3, 0);
 
 INSERT INTO dish (name, price, menu_id)
 VALUES ('Oduvanchiki pod sousom karri', 2, 1),

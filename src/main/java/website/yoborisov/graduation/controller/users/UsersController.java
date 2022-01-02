@@ -1,6 +1,7 @@
 package website.yoborisov.graduation.controller.users;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +39,9 @@ public class UsersController extends AbstractUserController {
     @Operation(summary = "Удалить пользователя с заданным id")
     @Override
     @DeleteMapping(path = "/{id}")
-    public @ResponseBody boolean delete(int id) {
-        return super.delete(id);
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody void delete(int id) {
+        super.delete(id);
     }
 
     @Operation(summary = "Обновить данные по пользователю с заданным id")

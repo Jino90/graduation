@@ -30,9 +30,9 @@ public abstract class AbstractUserController {
         return service.create(user);
     }
 
-    public boolean delete(int id) {
+    public void delete(int id) {
         log.info("delete {}", id);
-        return service.delete(id);
+        service.delete(id);
     }
 
     public User update(User user, int id) {
