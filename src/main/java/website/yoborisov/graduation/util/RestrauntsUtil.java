@@ -29,4 +29,9 @@ public class RestrauntsUtil {
         }
         return filtered;
     }
+
+    public static Restraunt getTopRanked(List<Restraunt> restraunts){
+        return restraunts.stream().max(Comparator.comparing(restraunt -> restraunt.getLastMenu().getVotes())).orElse(
+                null);
+    }
 }

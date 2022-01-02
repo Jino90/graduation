@@ -3,11 +3,16 @@ package website.yoborisov.graduation.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import org.hibernate.mapping.Collection;
 import website.yoborisov.graduation.HasId;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -30,6 +35,7 @@ public class Restraunt extends AbstractNamedEntity implements HasId {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 200)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Set<Menu> menuSet;
 
     public int getVotes() {
@@ -62,5 +68,9 @@ public class Restraunt extends AbstractNamedEntity implements HasId {
 
     public String getDescription() {
         return String.format("Ресторан № %d", this.id);
+    }
+
+    public Menu getLastMenu(){
+        return Collections.max(menuSet, Comparator.comparing(Menu::getPublishDate));
     }
 }

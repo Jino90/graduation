@@ -7,23 +7,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import website.yoborisov.graduation.GraduationApplication;
 import website.yoborisov.graduation.TimingExtension;
 import static website.yoborisov.graduation.util.ValidationUtil.getRootCause;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
-//@ExtendWith(SpringExtension.class)
-//@ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-//@SpringJUnitConfig(locations = {"classpath:application.properties"})
-//@SpringJUnitConfig(locations = {
-//        "classpath:spring/inmemory.xml"
-//})
 @ActiveProfiles("hsqldb")
-//@SpringJUnitConfig(locations = {"classpath:spring/inmemory.xml"})
-//@SpringJUnitConfig(classes = GraduationApplication.class)
 @Sql(scripts = "classpath:db/h2/data.sql", config = @SqlConfig(encoding = "UTF-8"), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @ExtendWith(TimingExtension.class)
 @ContextConfiguration

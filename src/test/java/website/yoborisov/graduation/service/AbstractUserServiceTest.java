@@ -12,9 +12,7 @@ import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static website.yoborisov.graduation.UserTestData.*;

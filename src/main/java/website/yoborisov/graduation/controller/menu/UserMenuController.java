@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,12 +15,15 @@ import website.yoborisov.graduation.model.Restraunt;
 import website.yoborisov.graduation.model.User;
 import website.yoborisov.graduation.service.MenuService;
 import website.yoborisov.graduation.service.UserService;
+import website.yoborisov.graduation.util.RestrauntsUtil;
 import website.yoborisov.graduation.util.SecurityUtil;
 import website.yoborisov.graduation.util.ValidationUtil;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Comparator;
+import java.util.List;
 
 @Controller
 @RequestMapping(path = "/user_menu/api")
@@ -61,5 +65,12 @@ public class UserMenuController extends AbstractMenuController {
         userService.update(user);
         log.info("Current user: {}", user);
         return menuService.update(menu, userId);
+    }
+
+    @Operation(summary = "Получить ресторан с самым высоким рейтингом меню сегодня")
+    @GetMapping("/restraunt/best")
+    public @ResponseBody Restraunt getRestrauntOfADay(){
+        List<Restraunt> todaysMenus = getAllTodayMenus();
+        return RestrauntsUtil.getTopRanked(todaysMenus);
     }
 }
