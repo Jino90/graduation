@@ -1,23 +1,13 @@
 package website.yoborisov.graduation.service;
 
-import org.mockito.internal.matchers.Null;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import website.yoborisov.graduation.model.Dish;
 import website.yoborisov.graduation.model.Menu;
 import website.yoborisov.graduation.model.Restraunt;
-import website.yoborisov.graduation.model.User;
-import website.yoborisov.graduation.repository.DishRepository;
-import website.yoborisov.graduation.repository.MenuRepository;
 import website.yoborisov.graduation.repository.RestrauntRepository;
-import website.yoborisov.graduation.repository.UserRepository;
 import website.yoborisov.graduation.util.RestrauntsUtil;
-
-import static website.yoborisov.graduation.util.ValidationUtil.checkNotFoundWithId;
-import static website.yoborisov.graduation.util.ValidationUtil.assureIdConsistent;
 
 import java.util.List;
 import java.util.Set;

@@ -2,7 +2,9 @@ package website.yoborisov.graduation.controller.users;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import website.yoborisov.graduation.View;
 import website.yoborisov.graduation.model.User;
 
 import java.util.List;
@@ -29,7 +31,7 @@ public class UsersController extends AbstractUserController {
     @Operation(summary = "Создать пользователя с заданным id")
     @Override
     @PostMapping(path = "/user")
-    public @ResponseBody User create(@RequestBody User user) {
+    public @ResponseBody User create(@Validated(View.Web.class) @RequestBody User user) {
         return super.create(user);
     }
 

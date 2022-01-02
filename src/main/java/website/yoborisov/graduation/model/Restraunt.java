@@ -22,6 +22,9 @@ public class Restraunt extends AbstractNamedEntity {
         this.menuSet = menuSet;
     }
 
+    @Transient
+    private String description;
+
     @OneToMany(mappedBy = "restraunt", fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 200)
@@ -54,5 +57,9 @@ public class Restraunt extends AbstractNamedEntity {
 
     public void increaseVotes() {
         this.votes++;
+    }
+
+    public String getDescription() {
+        return String.format("Ресторан № %d", this.id);
     }
 }

@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import website.yoborisov.graduation.HasId;
+import website.yoborisov.graduation.View;
 import website.yoborisov.graduation.model.Dish;
 import website.yoborisov.graduation.model.Menu;
 import website.yoborisov.graduation.model.Restraunt;
@@ -22,11 +24,7 @@ import website.yoborisov.graduation.util.SecurityUtil;
 import static website.yoborisov.graduation.util.ValidationUtil.assureIdConsistent;
 import static website.yoborisov.graduation.util.ValidationUtil.checkLength;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Controller
 @RequestMapping(path = "/admin_menu/api")
@@ -48,9 +46,18 @@ public class AdminMenuController extends AbstractMenuController {
     @PreAuthorize("isAuthenticated()")
     public @ResponseBody String deleteMenu(int id) {
         int userId = SecurityUtil.authUserId();
-        //int userId = 0;
         log.info("delete Menu {} for user {}", id, userId);
         menuService.delete(id, userId);
+        return "ОК";
+    }
+
+    @Operation(summary = "Удалить ресторан с заданным id")
+    @DeleteMapping(path = "/restraunt/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public @ResponseBody String deleteRestraunt(int id) {
+        int userId = SecurityUtil.authUserId();
+        log.info("delete Restraunt {} for user {}", id, userId);
+        restrauntService.delete(id);
         return "ОК";
     }
 
@@ -65,20 +72,19 @@ public class AdminMenuController extends AbstractMenuController {
         return menuService.create(menu, userId);
     }*/
 
-    @Operation(summary = "Сохранить в базе новое меню для указанного ресторана")
+    @Operation(summary = "Обновить меню для указанного ресторана")
     @PostMapping(path = "/menu")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
-    public @ResponseBody Menu createMenu(@RequestBody Set<Dish> dishSet, @RequestParam Integer restrauntId) {
+    public @ResponseBody Menu updateMenu(@Validated(View.Web.class) @RequestBody Set<Dish> dishSet, @RequestParam Integer restrauntId) {
         int userId = SecurityUtil.authUserId();
-        //int userId = 100001;
         checkLength(dishSet);
-        //log.info("create {} for user {}", menu, userId);
         //checkNew(Menu);
         Menu newMenu = new Menu(dishSet);
         Restraunt restraunt = restrauntService.get(restrauntId);
         newMenu.setRestraunt(restrauntService.get(restrauntId));
         newMenu = menuService.create(newMenu, userId);
+        log.info("update menu for restraunt {} for user {}", restraunt.getName(), userId);
         for (Dish dish: dishSet){
             dish.setMenu(newMenu);
             dishService.update(dish);
@@ -94,8 +100,7 @@ public class AdminMenuController extends AbstractMenuController {
     @PostMapping(path = "/restraunt/new")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
-    public @ResponseBody Restraunt createRestraunt(@RequestBody Restraunt restraunt){
-        //int userId = 100001;
+    public @ResponseBody Restraunt createRestraunt(@Validated(View.Web.class) @RequestBody Restraunt restraunt){
         int userId = SecurityUtil.authUserId();
         log.info("create restraunt {} by user {}", restraunt.getName(), userId);
         Restraunt restraunt1 = restrauntService.create(restraunt);
@@ -111,11 +116,11 @@ public class AdminMenuController extends AbstractMenuController {
         return restraunt1;
     }
 
+/*
     @Operation(summary = "Обновить меню с заданным id")
     @PutMapping(value = "/menu/{id}")
     @PreAuthorize("isAuthenticated()")
-    public @ResponseBody Menu updateMenu(@RequestBody Menu menu, int id) {
-        //int userId = SecurityUtil.authUserId();
+    public @ResponseBody Menu updateMenu(@Validated(View.Web.class) @RequestBody Menu menu, int id) {
         int userId = SecurityUtil.authUserId();
         log.info("update {} for user {}", menu, userId);
         checkLength(menu.getDishes());
@@ -126,11 +131,12 @@ public class AdminMenuController extends AbstractMenuController {
     @Operation(summary = "Обновить данные ресторана с заданным id")
     @PutMapping(value = "/restraunt/{id}")
     @PreAuthorize("isAuthenticated()")
-    public @ResponseBody Restraunt updateRestraunt(@RequestBody Restraunt restraunt, int menuId){
+    public @ResponseBody Restraunt updateRestraunt(@Validated(View.Web.class) @RequestBody Restraunt restraunt, int menuId){
         int userId = SecurityUtil.authUserId();
         log.info("update {} for user {}", restraunt, userId);
         return restrauntService.update(restraunt, menuId);
     }
+*/
 
     @Operation(summary = "Получить все меню ресторана")
     @GetMapping(value = "/restraunt/getmenus/{id}")
@@ -140,13 +146,13 @@ public class AdminMenuController extends AbstractMenuController {
         return restrauntService.getMenus(restrauntId);
     }
 
-    @Operation(summary = "Получить список ресторанов с актуальными меню")
+/*    @Operation(summary = "Получить список ресторанов с актуальными меню")
     @GetMapping(value = "/restraunt/actualmenus")
     @PreAuthorize("isAuthenticated()")
     public @ResponseBody List<Restraunt> getWithActualMenus(){
         log.info("Get actual menus for restraunts");
         return restrauntService.getWithTodaysActualMenu();
-    }
+    }*/
 
 /*    @Operation(summary = "Получить все меню")
     @Override
