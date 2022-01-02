@@ -3,6 +3,7 @@ package website.yoborisov.graduation.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import website.yoborisov.graduation.HasId;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -12,7 +13,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Entity
 @Table(name = "restraunt")
-public class Restraunt extends AbstractNamedEntity {
+public class Restraunt extends AbstractNamedEntity implements HasId {
 
     public Set<Menu> getMenuSet() {
         return menuSet;

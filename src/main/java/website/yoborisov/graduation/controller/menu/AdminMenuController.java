@@ -21,10 +21,9 @@ import website.yoborisov.graduation.service.MenuService;
 import website.yoborisov.graduation.service.RestrauntService;
 import website.yoborisov.graduation.util.SecurityUtil;
 
-import static website.yoborisov.graduation.util.ValidationUtil.assureIdConsistent;
-import static website.yoborisov.graduation.util.ValidationUtil.checkLength;
-
 import java.util.Set;
+
+import static website.yoborisov.graduation.util.ValidationUtil.*;
 
 @Controller
 @RequestMapping(path = "/admin_menu/api")
@@ -79,9 +78,9 @@ public class AdminMenuController extends AbstractMenuController {
     public @ResponseBody Menu updateMenu(@Validated(View.Web.class) @RequestBody Set<Dish> dishSet, @RequestParam Integer restrauntId) {
         int userId = SecurityUtil.authUserId();
         checkLength(dishSet);
-        //checkNew(Menu);
         Menu newMenu = new Menu(dishSet);
         Restraunt restraunt = restrauntService.get(restrauntId);
+        assureIdConsistent(restraunt, restrauntId);
         newMenu.setRestraunt(restrauntService.get(restrauntId));
         newMenu = menuService.create(newMenu, userId);
         log.info("update menu for restraunt {} for user {}", restraunt.getName(), userId);
@@ -103,6 +102,7 @@ public class AdminMenuController extends AbstractMenuController {
     public @ResponseBody Restraunt createRestraunt(@Validated(View.Web.class) @RequestBody Restraunt restraunt){
         int userId = SecurityUtil.authUserId();
         log.info("create restraunt {} by user {}", restraunt.getName(), userId);
+        checkNew(restraunt);
         Restraunt restraunt1 = restrauntService.create(restraunt);
         for (Menu menu: restraunt.getMenuSet()){
             checkLength(menu.getDishes());

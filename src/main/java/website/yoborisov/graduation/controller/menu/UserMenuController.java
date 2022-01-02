@@ -40,7 +40,6 @@ public class UserMenuController extends AbstractMenuController {
     Menu voteForMenu(int id) {
         int userId = SecurityUtil.authUserId();
         log.info("Vote for Menu № {}, by user {}", id, userId);
-        //assureIdConsistent(Menu, id);
         Menu menu = menuService.get(id);
         User user = userService.get(userId);
         LocalDateTime votingTime = LocalDateTime.now();
