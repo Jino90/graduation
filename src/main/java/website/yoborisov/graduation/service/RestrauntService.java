@@ -8,6 +8,7 @@ import website.yoborisov.graduation.model.Menu;
 import website.yoborisov.graduation.model.Restraunt;
 import website.yoborisov.graduation.repository.RestrauntRepository;
 import website.yoborisov.graduation.util.RestrauntsUtil;
+import website.yoborisov.graduation.util.ValidationUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class RestrauntService {
     public Restraunt create(Restraunt restraunt) {
         Assert.notNull(restraunt, "user must not be null");
         Assert.notNull(restraunt.getMenuSet(), "Menu must not be null");
+        ValidationUtil.checkLength(restraunt.getLastMenu().getDishes());
         return repository.save(restraunt);
     }
 

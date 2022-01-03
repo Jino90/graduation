@@ -105,7 +105,6 @@ public class AdminMenuController extends AbstractMenuController {
         checkNew(restraunt);
         Restraunt restraunt1 = restrauntService.create(restraunt);
         for (Menu menu: restraunt.getMenuSet()){
-            checkLength(menu.getDishes());
             menu.setRestraunt(restraunt1);
             Menu menu1 = menuService.create(menu, userId);
             for (Dish dish: menu.getDishes()){
@@ -113,6 +112,7 @@ public class AdminMenuController extends AbstractMenuController {
                 dishService.create(dish);
             }
         };
+        checkLength(restraunt.getLastMenu().getDishes());
         return restraunt1;
     }
 

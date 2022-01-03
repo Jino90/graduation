@@ -54,4 +54,13 @@ public class Dish extends AbstractNamedEntity{
     public void setMenu(Menu menu) {
         this.menu = menu;
     }
+
+    @Override
+    public String toString() {
+        return "Dish{" +
+                "id=" + id +
+                "name=" + name +
+                "price=" + price +
+                '}';
+    }
 }

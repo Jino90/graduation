@@ -35,7 +35,6 @@ public class Restraunt extends AbstractNamedEntity implements HasId {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 200)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
     private Set<Menu> menuSet;
 
     public int getVotes() {
@@ -70,6 +69,7 @@ public class Restraunt extends AbstractNamedEntity implements HasId {
         return String.format("Ресторан № %d", this.id);
     }
 
+    @JsonIgnore
     public Menu getLastMenu(){
         return Collections.max(menuSet, Comparator.comparing(Menu::getPublishDate));
     }

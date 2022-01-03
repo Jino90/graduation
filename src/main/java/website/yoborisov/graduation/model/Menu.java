@@ -125,4 +125,14 @@ public class Menu extends AbstractBaseEntity {
     public String getDescription() {
         return String.format("Меню № %d", this.id);
     }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                "dishes=" + dishes +
+                "votes=" + votes +
+                "author=" + author +
+                '}';
+    }
 }
