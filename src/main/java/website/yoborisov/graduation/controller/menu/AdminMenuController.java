@@ -21,6 +21,7 @@ import website.yoborisov.graduation.service.MenuService;
 import website.yoborisov.graduation.service.RestrauntService;
 import website.yoborisov.graduation.util.SecurityUtil;
 
+import java.util.List;
 import java.util.Set;
 
 import static website.yoborisov.graduation.util.ValidationUtil.*;
@@ -144,6 +145,14 @@ public class AdminMenuController extends AbstractMenuController {
     public @ResponseBody Set<Menu> getRestrauntMenus(@PathVariable(value="id") Integer restrauntId){
         log.info("Get menus for restraunt # {}", restrauntId);
         return restrauntService.getMenus(restrauntId);
+    }
+
+    @Operation(summary = "Получить все рестораны")
+    @GetMapping(value = "/restraunt/all")
+    @PreAuthorize("isAuthenticated()")
+    public @ResponseBody List<Restraunt> getRestrauntAll(){
+        log.info("Get All restraunts");
+        return restrauntService.getAll();
     }
 
 /*    @Operation(summary = "Получить список ресторанов с актуальными меню")
