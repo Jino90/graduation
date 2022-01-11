@@ -1,10 +1,9 @@
-package website.yoborisov.graduation.repository.datajpa;
+package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import website.yoborisov.graduation.model.User;
-import website.yoborisov.graduation.repository.UserRepository;
-import website.yoborisov.graduation.util.ValidationUtil;
+import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
 
@@ -43,4 +42,8 @@ public class DataJpaUserRepository implements UserRepository {
         return crudRepository.findAll(SORT_NAME_EMAIL);
     }
 
+    @Override
+    public User getWithMeals(int id) {
+        return crudRepository.getWithMeals(id);
+    }
 }

@@ -1,36 +1,37 @@
-package website.yoborisov.graduation;
+package ru.javawebinar.topjava;
 
-import website.yoborisov.graduation.model.User;
+import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.util.UserUtil;
 
 import java.io.Serial;
 
 public class AuthorizedUser extends org.springframework.security.core.userdetails.User {
-
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private User user;
+    private UserTo userTo;
 
     public AuthorizedUser(User user) {
         super(user.getEmail(), user.getPassword(), user.isEnabled(), true, true, true, user.getRoles());
-        setTo(user);
+        setTo(UserUtil.asTo(user));
     }
 
     public int getId() {
-        return this.user.id();
+        return userTo.id();
     }
 
-    public void setTo(User user) {
-        user.setPassword(null);
-        this.user = user;
+    public void setTo(UserTo newTo) {
+        newTo.setPassword(null);
+        userTo = newTo;
     }
 
-    public User getUser() {
-        return user;
+    public UserTo getUserTo() {
+        return userTo;
     }
 
     @Override
     public String toString() {
-        return this.user.toString();
+        return userTo.toString();
     }
 }

@@ -1,4 +1,4 @@
-package website.yoborisov.graduation;
+package ru.javawebinar.topjava;
 
 import org.springframework.util.Assert;
 
@@ -11,6 +11,7 @@ public interface HasId {
         return getId() == null;
     }
 
+    // doesn't work for hibernate lazy proxy
     default int id() {
         Assert.notNull(getId(), "Entity must has id");
         return getId();

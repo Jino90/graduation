@@ -1,4 +1,4 @@
-package website.yoborisov.graduation;
+package ru.javawebinar.topjava;
 
 import javax.validation.groups.Default;
 

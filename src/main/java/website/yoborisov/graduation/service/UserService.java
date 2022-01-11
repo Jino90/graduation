@@ -1,49 +1,71 @@
-package website.yoborisov.graduation.service;
+package ru.javawebinar.topjava.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import website.yoborisov.graduation.AuthorizedUser;
-import website.yoborisov.graduation.model.User;
-import website.yoborisov.graduation.repository.UserRepository;
-import website.yoborisov.graduation.util.UserUtil;
-import website.yoborisov.graduation.util.ValidationUtil;
+import ru.javawebinar.topjava.AuthorizedUser;
+import ru.javawebinar.topjava.Profiles;
+import ru.javawebinar.topjava.model.AbstractBaseEntity;
+import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.util.UserUtil;
+import ru.javawebinar.topjava.util.exception.UpdateRestrictionException;
 
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.UserUtil.prepareToSave;
+import static ru.javawebinar.topjava.util.validation.ValidationUtil.checkNotFound;
+import static ru.javawebinar.topjava.util.validation.ValidationUtil.checkNotFoundWithId;
+
 @Service("userService")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repository) {
+    private boolean updateRestriction;
+
+    @Autowired
+    @SuppressWarnings("deprecation")
+    public void setEnvironment(Environment environment) {
+        updateRestriction = environment.acceptsProfiles(Profiles.HEROKU);
+    }
+
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         Assert.notNull(user, "user must not be null");
-        ValidationUtil.validate(user);
-        return repository.save(UserUtil.prepareToSave(user));
+        return prepareAndSave(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
-        ValidationUtil.checkNotFound(repository.delete(id), "id=" + id);
+        checkModificationAllowed(id);
+        checkNotFoundWithId(repository.delete(id), id);
     }
 
     public User get(int id) {
-        return ValidationUtil.checkNotFound(repository.get(id), "userId=" + id);
+        return checkNotFoundWithId(repository.get(id), id);
     }
 
     public User getByEmail(String email) {
         Assert.notNull(email, "email must not be null");
-        return repository.getByEmail(email);
+        return checkNotFound(repository.getByEmail(email), "email=" + email);
     }
 
     @Cacheable("users")
@@ -52,13 +74,32 @@ public class UserService implements UserDetailsService {
     }
 
     @CacheEvict(value = "users", allEntries = true)
-    public User update(User user) {
+    public void update(User user) {
         Assert.notNull(user, "user must not be null");
-        return repository.save(user);
+//      checkNotFoundWithId : check works only for JDBC, disabled
+        checkModificationAllowed(user.id());
+        prepareAndSave(user);
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
+    public void update(UserTo userTo) {
+        checkModificationAllowed(userTo.id());
+        User user = get(userTo.id());
+        prepareAndSave(UserUtil.updateFromTo(user, userTo));
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
+    public void enable(int id, boolean enabled) {
+        checkModificationAllowed(id);
+        User user = get(id);
+        user.setEnabled(enabled);
+        repository.save(user);  // !! need only for JDBC implementation
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = repository.getByEmail(email.toLowerCase());
         if (user == null) {
             throw new UsernameNotFoundException("User " + email + " is not found");
@@ -66,12 +107,17 @@ public class UserService implements UserDetailsService {
         return new AuthorizedUser(user);
     }
 
-    @CacheEvict(value = "users", allEntries = true)
-    @Transactional
-    public void enable(int id, boolean enabled) {
-        User user = get(id);
-        user.setEnabled(enabled);
-        repository.save(user);  // !! need only for JDBC implementation
+    private User prepareAndSave(User user) {
+        return repository.save(prepareToSave(user, passwordEncoder));
     }
 
+    public User getWithMeals(int id) {
+        return checkNotFoundWithId(repository.getWithMeals(id), id);
+    }
+
+    protected void checkModificationAllowed(int id) {
+        if (updateRestriction && id < AbstractBaseEntity.START_SEQ + 2) {
+            throw new UpdateRestrictionException();
+        }
+    }
 }
